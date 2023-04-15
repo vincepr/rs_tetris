@@ -8,7 +8,7 @@ Viable Tetris shapes include Tetrominos like
 from https://de.wikipedia.org/wiki/Tetris
 */
 
-/// Represents the X and Y choords of one "gamePixel" (4 of with make one Tetris shape usually) 
+/// Represents the X and Y choords of one "gamePixel" (4 of with make one Tetris shape usually)
 #[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct XY(pub i32, pub i32);
 
@@ -27,12 +27,12 @@ pub struct Shape {
 
 impl Shape {
     // getter ( short syntax bound to the self lifetime with +'_)
-    pub fn get_pixels(&self) -> impl Iterator<Item = XY> +'_{
+    pub fn get_pixels(&self) -> impl Iterator<Item = XY> + '_ {
         self.pixels.iter().copied()
     }
 
     // getter
-    pub fn get_typ(&self) -> &'static str{
+    pub fn get_typ(&self) -> &'static str {
         self.typ
     }
 
@@ -41,35 +41,40 @@ impl Shape {
     }
 
     // compares 2 HashSets for collision (so therefore we know the pixels do not overlap)
-    pub fn collides_with(&self, other: &Shape)->bool{
+    pub fn collides_with(&self, other: &Shape) -> bool {
         self.pixels.intersection(&other.pixels).count() > 0
     }
 
     /// returns a new clockwise rotated copy of a shape.
-    pub fn rotated_shape(&self) -> Self{
+    pub fn rotated_shape(&self) -> Self {
         let XY(x_off, y_off) = self.anchor;
-        let new_pixels = self.get_pixels().map(|XY(x,y)|{
-            // for a clockwise rotation:
-            // first we subtract our anchor (basically an offset)
-            // then new_x = -old-y and new_y = old_x
-            // and last step is adding back the offset
-            XY(-y+y_off+x_off, x-x_off+y_off)
-        }).collect();
-        Self { pixels: new_pixels, anchor: self.anchor, typ:self.typ}
+        let new_pixels = self
+            .get_pixels()
+            .map(|XY(x, y)| {
+                // for a clockwise rotation:
+                // first we subtract our anchor (basically an offset)
+                // then new_x = -old-y and new_y = old_x
+                // and last step is adding back the offset
+                XY(-y + y_off + x_off, x - x_off + y_off)
+            })
+            .collect();
+        Self {
+            pixels: new_pixels,
+            anchor: self.anchor,
+            typ: self.typ,
+        }
     }
 
-    pub fn remove_line(&mut self, y: i32){
+    pub fn remove_line(&mut self, y: i32) {
         self.pixels = self
             .pixels
             .iter()
             .copied()
             .filter(|xy| xy.1 != y)
-            .map(|xy| if xy.1 >= y {xy} else {
-                XY(xy.0, xy.1+1)
-            })
+            .map(|xy| if xy.1 >= y { xy } else { XY(xy.0, xy.1 + 1) })
             .collect();
     }
-    
+
     // constructors:
     pub fn new_i() -> Self {
         Self {
@@ -154,27 +159,24 @@ impl Shape {
     }
 }
 
-
 /// translate/modify the the Shape by a XY-Position. +(XY=(3,1) -> 3 to the right 1 down)
 /// we accomplish this by overloading the Add method therefore + syntax becomes available
-impl Add<XY> for &Shape{
+impl Add<XY> for &Shape {
     type Output = Shape;
-    fn add(self, rhs: XY) -> Self::Output{
+    fn add(self, rhs: XY) -> Self::Output {
         Shape {
-            pixels: self.pixels.iter()
-                .map( |xy| xy + rhs)
-                .collect(),
+            pixels: self.pixels.iter().map(|xy| xy + rhs).collect(),
             anchor: &self.anchor + rhs,
-            typ: &self.typ
+            typ: &self.typ,
         }
     }
 }
 
 /// translate/modify the the XY-Positions by another XY-Position. +(XY=(3,1) -> 3 to the right 1 down)
 /// we accomplish this by overloading the Add method therefore + syntax becomes available
-impl Add<XY> for &XY{
+impl Add<XY> for &XY {
     type Output = XY;
-    fn add(self, rhs: XY) -> Self::Output{
-        XY(self.0+rhs.0,   self.1+rhs.1)
+    fn add(self, rhs: XY) -> Self::Output {
+        XY(self.0 + rhs.0, self.1 + rhs.1)
     }
 }
