@@ -122,9 +122,11 @@ name = "rs_tetris"
 version = "0.1.0"
 dependencies = [
  "getrandom",
+ "js-sys",
  "rand",
  "wasm-bindgen",
  "wasm-react",
+ "web-sys",
 ]
 
 [[package]]

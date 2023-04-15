@@ -32,6 +32,29 @@ impl Tetris {
             sticky_bottom_shapes: vec![],
         }
     }
+
+    /// get_pixels, used expose the game pixels to the outside (then draw the canvas)
+    pub fn get_pixels(&self) -> impl Iterator<Item = XY>{
+        // to not depend on the &self lifetime we rebind height and width:
+        let height = self.height;
+        let width = self.width;
+        (0..height).flat_map(move |y|(0..width).map(move |x| XY(x,y)))
+    }
+
+    ///
+    pub fn get(&self, xy: XY) -> Option<&'static str> {
+        if self.current_shape.has_xy(xy) {
+            // xy is in current shape:
+            Some(self.current_shape.get_typ())
+        } else {
+            // check if sticky_bottom contains xy:
+            self.sticky_bottom_shapes
+                .iter()
+                .find(|shape| shape.has_xy(xy))
+                .map(|shape| shape.get_typ())
+        }
+    }
+
     // check if a shape is colliding with the game pixels
     fn is_colliding(&self, shape: &Shape)->bool{
         self.sticky_bottom_shapes.iter().any(|s|s.collides_with(shape))
@@ -124,7 +147,6 @@ impl Tetris {
             self.current_shape = new_shape;
         }
     }
-    
 }
 
 

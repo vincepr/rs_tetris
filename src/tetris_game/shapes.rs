@@ -21,12 +21,23 @@ pub struct Shape {
     pixels: HashSet<XY>,
     /// Anchor we rotate on  
     anchor: XY,
+    /// info about color etc:
+    typ: &'static str,
 }
 
 impl Shape {
     // getter ( short syntax bound to the self lifetime with +'_)
     pub fn get_pixels(&self) -> impl Iterator<Item = XY> +'_{
         self.pixels.iter().copied()
+    }
+
+    // getter
+    pub fn get_typ(&self) -> &'static str{
+        self.typ
+    }
+
+    pub fn has_xy(&self, xy: XY) -> bool {
+        self.pixels.contains(&xy)
     }
 
     // compares 2 HashSets for collision (so therefore we know the pixels do not overlap)
@@ -44,7 +55,7 @@ impl Shape {
             // and last step is adding back the offset
             XY(-y+y_off+x_off, x-x_off+y_off)
         }).collect();
-        Self { pixels: new_pixels, anchor: self.anchor }
+        Self { pixels: new_pixels, anchor: self.anchor, typ:self.typ}
     }
 
     pub fn remove_line(&mut self, y: i32){
@@ -62,26 +73,29 @@ impl Shape {
     // constructors:
     pub fn new_i() -> Self {
         Self {
-            pixels: [XY(0, 0), XY(1, 0), XY(2, 0), XY(3, 0)]
+            pixels: [XY(-1, 0), XY(0, 0), XY(1, 0), XY(2, 0)]
                 .into_iter()
                 .collect(),
-            anchor: XY(1, 0),
+            anchor: XY(0, 0),
+            typ: "🟦",
         }
     }
     pub fn new_j() -> Self {
         Self {
-            pixels: [XY(0, 0), XY(0, 1), XY(0, 2), XY(-1, 2)]
+            pixels: [XY(-1, 0), XY(-1, 1), XY(0, 1), XY(1, 1)]
                 .into_iter()
                 .collect(),
             anchor: XY(0, 1),
+            typ: "🟫",
         }
     }
     pub fn new_l() -> Self {
         Self {
-            pixels: [XY(0, 0), XY(0, 1), XY(0, 2), XY(1, 2)]
+            pixels: [XY(-1, 1), XY(0, 1), XY(1, 1), XY(1, 0)]
                 .into_iter()
                 .collect(),
-            anchor: XY(0, 0),
+            anchor: XY(0, 1),
+            typ: "🟧",
         }
     }
     pub fn new_o() -> Self {
@@ -89,31 +103,38 @@ impl Shape {
             pixels: [XY(0, 0), XY(1, 0), XY(0, 1), XY(1, 1)]
                 .into_iter()
                 .collect(),
-            anchor: XY(0, 0),
+            anchor: XY(0, 1),
+
+            typ: "🟨",
         }
     }
     pub fn new_s() -> Self {
         Self {
-            pixels: [XY(0, 0), XY(1, 0), XY(0, 1), XY(1, 1)]
+            pixels: [XY(-1, 1), XY(0, 0), XY(0, 1), XY(1, 0)]
                 .into_iter()
                 .collect(),
-            anchor: XY(0, 0),
+            anchor: XY(0, 1),
+            typ: "🟩",
         }
     }
     pub fn new_t() -> Self {
         Self {
-            pixels: [XY(0, 0), XY(1, 0), XY(0, 1), XY(1, 1)]
+            pixels: [XY(0, 0), XY(0, 1), XY(-1, 1), XY(1, 1)]
                 .into_iter()
                 .collect(),
-            anchor: XY(0, 0),
+            anchor: XY(0, 1),
+
+            typ: "🟪",
         }
     }
     pub fn new_z() -> Self {
         Self {
-            pixels: [XY(0, 0), XY(1, 0), XY(0, 1), XY(1, 1)]
+            pixels: [XY(-1, 0), XY(0, 0), XY(0, 1), XY(1, 1)]
                 .into_iter()
                 .collect(),
-            anchor: XY(0, 0),
+            anchor: XY(0, 1),
+
+            typ: "🟥",
         }
     }
 
@@ -144,6 +165,7 @@ impl Add<XY> for &Shape{
                 .map( |xy| xy + rhs)
                 .collect(),
             anchor: &self.anchor + rhs,
+            typ: &self.typ
         }
     }
 }
