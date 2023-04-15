@@ -1,8 +1,8 @@
 use js_sys::{Reflect, Function};
 use tetris_game::{Tetris, Direction};
 use wasm_bindgen::{JsValue, UnwrapThrowExt, prelude::Closure, JsCast};
-use wasm_react::{Component, h, c, hooks::{use_state, use_effect, Deps, use_callback}, export_components, props::Style};
-use web_sys::{window, KeyboardEvent};
+use wasm_react::{Component, h, c, hooks::{use_state, use_effect, Deps, use_callback, use_js_ref}, export_components, props::Style};
+use web_sys::{window, KeyboardEvent, HtmlElement, Element};
 
 pub mod tetris_game;
 
@@ -34,6 +34,22 @@ impl Component for App {
     fn render(&self) -> wasm_react::VNode{
         let tetris = use_state(|| Tetris::new(self.width, self.height));
         let speed = use_state(|| 500);
+
+        // autofocus the div once mounted:
+        let container = use_js_ref::<Element>(None);
+        use_effect(
+            {
+                let container = container.clone();
+                move||{
+                container
+                    .current()
+                    .and_then(|el| el.dyn_into::<HtmlElement>().ok())
+                    .map(|el| el.focus().ok());
+
+                ||()
+            }},
+            Deps::none()
+        );
 
         // the timer the game loop runs on:
         use_effect({
@@ -92,7 +108,7 @@ impl Component for App {
                             tetris
                         })
                     } else if code == "ArrowDown" {
-                        speed.set(|_|80)
+                        speed.set(|_|55)
                     }
                 }
             }, 
@@ -114,6 +130,7 @@ impl Component for App {
 
         // the div that make up the game-canvas-pixels:
         h!(div)
+        .ref_container(&container)
             .tabindex(0)
             .on_keydown(&handle_key_down)
             .on_keyup(&handle_key_up)
