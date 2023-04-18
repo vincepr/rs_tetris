@@ -25,7 +25,7 @@ jobs:
       #   run: wasm-pack test --headless --chrome
 
       - name: build website
-        run: wasm-pack build --target web
+        run: wasm-pack --target web --out-dir build --release
 
         ## store our files for the next step:
       - name: Upload production-ready build files
