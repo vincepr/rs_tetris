@@ -3,10 +3,10 @@ name: Custom Deploy to GitHub Pages
 on:
   push:
     branches:
-      - ["master", "main"]
+      - master
   pull_request:
     brnches:
-      - ["master", "main"]
+      - master
 jobs:
   build:
     name: Build for Github Pages
