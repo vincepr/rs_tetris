@@ -3,7 +3,10 @@ name: Custom Deploy to GitHub Pages
 on:
   push:
     branches:
-      - master
+      - ["master", "main"]
+  pull_request:
+    brnches:
+      - ["master", "main"]
 jobs:
   build:
     name: Build for Github Pages
@@ -15,30 +18,47 @@ jobs:
       
       - name: Install
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-        # TODO: make this faster with https://github.com/jetli/wasm-pack-action/blob/master/README.md
+        # TODO: try to make this faster with https://github.com/jetli/wasm-pack-action/blob/master/README.md
 
+      ## Experimental caching for faster rust compiles ->
+      - name: Cargo Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-${{ hashFiles('Cargo.toml') }}
+            ${{ runner.os }}-cargo
+
+      - name: Cargo Target Cache
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.toml') }}
+            ${{ runner.os }}-cargo-target
+      ## <- Experimental caching for faster rust compiles
+        
       - name: Run Tests
         run: cargo test
-      
       # # This will not run without wasm-bindgen-test as a dependence in Cargo.toml
       # - name: Run wasm-pack tests against headless browser of choice
       #   run: wasm-pack test --headless --chrome
 
       - name: build website
         run: wasm-pack build --target web --out-dir ./build --release
-      # current wasm-pack creates a gitignore in the out-dir (and no flag to turn that off):
+
+        # current wasm-pack creates a gitignore in the out-dir (and no flag to turn that off):
       - name: clean up gitignore from wasm-pack   
         run: rm -f ./build/.gitignore
 
-        ## store our files for the next step:
+        # store our files for the next step:
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v3
         with:
           name: production-files
           path: ./build
-      
-      
-      
       
   deploy:
     name: Deploy to Github Pages
@@ -57,23 +77,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-
-
-      # - uses: actions/checkout@v2
-      # # - name: Install dependencies
-      # #   run: cargo ...
-      # - name: build website
-      #   run: wasp-pack build --target web
-      # # Action to deploy to Github Pages branch:
-      # - name: push to GithubPages branch
-      #   uses: peaceiris/actions-gh-pages@v3
-      #   with:
-      #     # Build output to push it to gh-pages branch
-      #     publish_dir: ./build
-      #     # The following lines assign commit authorship to the official
-      #     # GH-Actions bot for deploys to `gh-pages` branch:
-      #     # https://github.com/actions/checkout/issues/13#issuecomment-724415212
-      #     # The GH actions bot is used by default if you didn't specify the two fields.
-      #     # You can swap them out with your own user credentials.
-      #     user_name: github-actions[bot]
-      #     user_email: 41898282+github-actions[bot]@users.noreply.github.com
