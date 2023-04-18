@@ -20,8 +20,9 @@ jobs:
       - name: Run Tests
         run: cargo test
       
-      - name: Run wasm-pack tests against headless browser of choice
-        run: wasm-pack test --headless --chrome
+      # # This will not run without wasm-bindgen-test as a dependence in Cargo.toml
+      # - name: Run wasm-pack tests against headless browser of choice
+      #   run: wasm-pack test --headless --chrome
 
       - name: build website
         run: wasm-pack build --target web
