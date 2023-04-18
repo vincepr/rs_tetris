@@ -38,6 +38,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.toml') }}
             ${{ runner.os }}-cargo-target
+
+          # Speedup with caching:
+          # Run Test : 49s
+          # build website: 20s
+          # -> -> -> 
+          # Run Test: 11s
+          # build website: 6s
+
       ## <- Experimental caching for faster rust compiles
         
       - name: Run Tests

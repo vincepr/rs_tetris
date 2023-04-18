@@ -89,7 +89,7 @@ impl Component for App {
         );
 
         // event handler for user input:
-        let mut handle_key_down = use_callback(
+        let handle_key_down = use_callback(
             {
                 let mut tetris = tetris.clone();
                 let mut speed = speed.clone();
