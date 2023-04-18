@@ -18,7 +18,7 @@ jobs:
 
         ## store our files for the next step:
       - name: Upload production-ready build files
-        uses: action/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: production-files
           path: ./build
