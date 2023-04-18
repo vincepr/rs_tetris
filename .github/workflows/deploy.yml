@@ -26,6 +26,9 @@ jobs:
 
       - name: build website
         run: wasm-pack build --target web --out-dir ./build --release
+      # current wasm-pack creates a gitignore in the out-dir (and no flag to turn that off):
+      - name: clean up gitignore from wasm-pack   
+        run: rm -f ./build/.gitignore
 
         ## store our files for the next step:
       - name: Upload production-ready build files
