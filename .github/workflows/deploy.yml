@@ -12,6 +12,16 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+      
+      - name: Install
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        # TODO: make this faster with https://github.com/jetli/wasm-pack-action/blob/master/README.md
+
+      - name: Run Tests
+        run: cargo test
+      
+      - name: Run wasm-pack tests against headless browser of choice
+        run: wasm-pack test --headless --chrome
 
       - name: build website
         run: wasm-pack build --target web
