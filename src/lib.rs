@@ -12,7 +12,7 @@ use web_sys::{window, Element, HtmlElement, KeyboardEvent};
 pub mod tetris_game;
 
 /*
-*   UI (react with a rust wasm binding) all in here atm:
+*   UI (react with a rust wasm bindings)
 */
 
 pub struct App {
@@ -115,6 +115,10 @@ impl Component for App {
                             tetris
                         })
                     } else if code == "ArrowDown" {
+                        tetris.set(|mut tetris|{
+                            tetris.tick();
+                            tetris
+                        });
                         speed.set(|_| 55)
                     }
                 }

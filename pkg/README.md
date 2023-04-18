@@ -1,7 +1,8 @@
 # A Tetris implementation in Rust
 Using Rust and WASM (Web Assembly) to build a client side Tetris game that runs in a browser.
 
-Goal of this project is mainly to get familiar with rust.
+## Live Demo
+- https://vincepr.github.io/rs_tetris/
 
 ## Notes while doing the Project
 - install wasp-pack: `cargo install wasm-pack`
