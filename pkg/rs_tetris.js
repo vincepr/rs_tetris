@@ -94,14 +94,14 @@ function makeMutClosure(arg0, arg1, dtor, f) {
 
     return real;
 }
-function __wbg_adapter_26(arg0, arg1) {
-    const ret = wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hc61f21d4de7ea0f9(arg0, arg1);
-    return takeObject(ret);
-}
-
-function __wbg_adapter_29(arg0, arg1, arg2) {
+function __wbg_adapter_26(arg0, arg1, arg2) {
     const ret = wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h92af507ec56f87cb(arg0, arg1, addHeapObject(arg2));
     return __WasmReact_RefContainerValue.__wrap(ret);
+}
+
+function __wbg_adapter_29(arg0, arg1) {
+    const ret = wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hc61f21d4de7ea0f9(arg0, arg1);
+    return takeObject(ret);
 }
 
 function __wbg_adapter_32(arg0, arg1) {
@@ -608,19 +608,19 @@ function getImports() {
         const ret = wasm.memory;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper144 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper145 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 62, __wbg_adapter_26);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper145 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper146 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 62, __wbg_adapter_29);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper146 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper147 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 62, __wbg_adapter_32);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper235 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper236 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 96, __wbg_adapter_35);
         return addHeapObject(ret);
     };
