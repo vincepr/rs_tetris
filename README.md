@@ -15,18 +15,22 @@ Using Rust and WASM (Web Assembly) to build a client side Tetris game that runs 
 ### Making WASM ready (including rand)
 - `cargo add getrandom --features js`
 - `cargo add js-sys`
-- compile with wasm: `wasm-pack build --target web`
+- compile with wasm for local testing: `wasm-pack build --out-dir ./build/pkg --target web`
 - `cargo add web-sys` and include window, to get access to window (and therefor timer) 
     - web-sys gates each interface behind a cargo feature, so we have to specify what feature we want (in Cargo.toml)
 ```
 web-sys = {version="0.3.61", features = ["Window"]}
 ```
 
+## Testing locally
+- generate the WASM and JS bindings from the Rust sourcecode:`wasm-pack build --out-dir ./build/pkg --target web` 
+- 
+
 ## Notes on CI with github Actions
 - as of this moment wasm-pack build generates a .gitignore for the folder (and no flag to turn that optional)
     - so it is necessary before `actions/upload-artifact@v3` to copy those files or delete that gitignore
 - rust (and especially cargo downloads) are really slow.
-    - caching the dependencies (github stores them for 7 days) really speeds things up
+    - caching the dependencies (github stores them for 7-30 days) really speeds things up
     - from:
         - Run Test : 49s
         - build website: 20s

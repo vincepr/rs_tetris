@@ -18,7 +18,7 @@
     <script type="module">
         import "https://unpkg.com/react@18/umd/react.development.js";
         import "https://unpkg.com/react-dom@18/umd/react-dom.development.js";
-        import init, {App, WasmReact} from "./rs_tetris.js"
+        import init, {App, WasmReact} from "./pkg/rs_tetris.js"
 
         await init();
         WasmReact.useReact(window.React);
