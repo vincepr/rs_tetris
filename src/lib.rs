@@ -12,6 +12,7 @@ use web_sys::{window, Element, HtmlElement, KeyboardEvent};
 
 pub mod tetris_game;
 
+
 /*
 *   UI (react with a rust wasm bindings)
 */
@@ -157,7 +158,7 @@ impl Component for App {
                     .border("1px solid grey"),
             )
             .build(c![..tetris.value().get_pixels().map(|xy| {
-                let typ = tetris.value().get(xy);
+                let typ = tetris.value().get_typ(xy);
 
                 h!(div)
                     .style(&Style::new().text_indent("-.2em").margin_top("-.2em"))

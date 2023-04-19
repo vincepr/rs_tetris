@@ -1,16 +1,25 @@
 pub mod shapes;
+pub mod buf;
 use self::shapes::{Shape, XY};
 
-// TODO: refactor sticky_bottom_shapes to Vec<XY> and move the remove_line logic out of shapes etc.
+/*
+    Implements the Game logic.
+        - excluding: 
+            - frontend
+            - timer implementation
+            - io/ -input (keypresses etc)
+*/
 
 /// The Game(State) itself
 #[derive(Debug)]
 pub struct Tetris {
-    game_over: bool,
-    width: i32,
-    height: i32,
-    current_shape: Shape,
-    /// the fixed shapes that build up on the bottom of the game:
+    game_over:      bool,
+    width:          i32,
+    height:         i32,
+    /// Player controlled shape and the next shape
+    current_shape:  Shape,
+    next_shape:     Shape,
+    /// Pixels that build up on the bottom of the game:
     sticky_bottom_shapes: Vec<Shape>,
 }
 #[derive(Debug)]
@@ -27,12 +36,13 @@ impl Tetris {
             width: width as i32,
             height: height as i32,
             // current shape starts in middle of screen (half width):
-            current_shape: &Shape::new() + XY((width as i32) / 2, 0),
+            current_shape:  &Shape::new() + XY((width as i32) / 2, 0),
+            next_shape:     &Shape::new() + XY((width as i32) / 2, 0),
             sticky_bottom_shapes: vec![],
         }
     }
 
-    /// get_pixels, used expose the game pixels to the outside (then draw the canvas)
+    /// get_pixels, expose the game pixels to the outside (then draw the canvas in frontend)
     pub fn get_pixels(&self) -> impl Iterator<Item = XY> {
         // to not depend on the &self lifetime we rebind height and width:
         let height = self.height;
@@ -40,8 +50,8 @@ impl Tetris {
         (0..height).flat_map(move |y| (0..width).map(move |x| XY(x, y)))
     }
 
-    ///
-    pub fn get(&self, xy: XY) -> Option<&'static str> {
+    /// get type of the shape on point xy
+    pub fn get_typ(&self, xy: XY) -> Option<&'static str> {
         if self.current_shape.has_xy(xy) {
             // xy is in current shape:
             Some(self.current_shape.get_typ())
@@ -89,6 +99,7 @@ impl Tetris {
     }
 
     fn remove_full_lines(&mut self) {
+        // TODO: add highscore here
         for y in 0..self.height {
             if self.is_line_full(y) {
                 self.remove_line(y)
@@ -107,8 +118,9 @@ impl Tetris {
         if self.is_out_of_bounds(&new_pos) || self.is_colliding(&new_pos) {
             // current shape hit bottom
             // -> so we 1. add the current shape to the sticky_bottom_shapes:
-            // -> so we 2. create a new current shape for the top:
+            // ->    we 2. create a new current shape for the top:
             let new_sticky = std::mem::replace(
+                // TODO: use Ringbuffer / std::collections::VecDeque to implement next_shapes
                 &mut self.current_shape,
                 &Shape::new() + XY(self.width / 2, 0),
             );
