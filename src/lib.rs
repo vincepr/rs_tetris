@@ -9,9 +9,7 @@ use wasm_react::{
 };
 use web_sys::{window, Element, HtmlElement, KeyboardEvent};
 
-
 pub mod tetris_game;
-
 
 /*
 *   UI (react with a rust wasm bindings)
@@ -117,7 +115,7 @@ impl Component for App {
                             tetris
                         })
                     } else if code == "ArrowDown" {
-                        tetris.set(|mut tetris|{
+                        tetris.set(|mut tetris| {
                             tetris.tick();
                             tetris
                         });

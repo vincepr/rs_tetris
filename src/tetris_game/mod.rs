@@ -1,11 +1,11 @@
-pub mod shapes;
 pub mod buf;
-use self::shapes::{Shape, XY};
+pub mod shapes;
 use self::buf::RingBuffer;
+use self::shapes::{Shape, XY};
 
 /*
     Implements the Game logic.
-        - excluding: 
+        - excluding:
             - frontend
             - timer implementation
             - io/ -input (keypresses etc)
@@ -14,12 +14,12 @@ use self::buf::RingBuffer;
 /// The Game(State) itself
 #[derive(Debug)]
 pub struct Tetris {
-    game_over:      bool,
-    width:          i32,
-    height:         i32,
+    game_over: bool,
+    width: i32,
+    height: i32,
     /// Player controlled shape and the next shape
-    current_shape:  Shape,
-    next_shape:     RingBuffer<Shape>,
+    current_shape: Shape,
+    next_shapes: RingBuffer<Shape>,
     /// Pixels that build up on the bottom of the game:
     sticky_bottom_shapes: Vec<Shape>,
 }
@@ -32,13 +32,19 @@ pub enum Direction {
 impl Tetris {
     // constructor, starts a new game of width X heigth Pixels/Blocks
     pub fn new(width: u32, height: u32) -> Self {
+        let initial_next_shapes = vec![
+            &Shape::new() + XY((width as i32) / 2, 0),
+            &Shape::new() + XY((width as i32) / 2, 0),
+            &Shape::new() + XY((width as i32) / 2, 0),
+            &Shape::new() + XY((width as i32) / 2, 0),
+        ];
         Self {
             game_over: false,
             width: width as i32,
             height: height as i32,
             // current shape starts in middle of screen (half width):
-            current_shape:  &Shape::new() + XY((width as i32) / 2, 0),
-            next_shape:     &Shape::new() + XY((width as i32) / 2, 0),
+            current_shape: &Shape::new() + XY((width as i32) / 2, 0),
+            next_shapes: RingBuffer::new(initial_next_shapes),
             sticky_bottom_shapes: vec![],
         }
     }
@@ -64,6 +70,8 @@ impl Tetris {
                 .map(|shape| shape.get_typ())
         }
     }
+
+    // private helper functionality:
 
     // check if a shape is colliding with the game pixels
     fn is_colliding(&self, shape: &Shape) -> bool {
@@ -120,12 +128,7 @@ impl Tetris {
             // current shape hit bottom
             // -> so we 1. add the current shape to the sticky_bottom_shapes:
             // ->    we 2. create a new current shape for the top:
-            let new_sticky = std::mem::replace(
-                // TODO: use Ringbuffer / std::collections::VecDeque to implement next_shapes
-                &mut self.current_shape,
-                &Shape::new() + XY(self.width / 2, 0),
-            );
-            self.sticky_bottom_shapes.push(new_sticky);
+            self.next_shape();
 
             self.remove_full_lines();
 
@@ -136,6 +139,19 @@ impl Tetris {
         } else {
             self.current_shape = new_pos;
         }
+    }
+
+    // helper for tick(), gets a new shape from the "RingBuffered" next_shapes queue
+    // sets that shape to current shape and inserts a new shape to the queue
+    fn next_shape(&mut self) {
+        let random_shape = &Shape::new() + XY(self.width / 2, 0);
+        let next_shape = self.next_shapes.pop_and_push(random_shape);
+
+        let new_sticky = std::mem::replace(
+            &mut self.current_shape,
+            next_shape,
+        );
+        self.sticky_bottom_shapes.push(new_sticky);
     }
 
     /// Player Interacting with left right input -> move shape left/right
