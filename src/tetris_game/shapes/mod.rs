@@ -15,7 +15,7 @@ pub struct XY(pub i32, pub i32);
 /// A Shape is just a container for The XY Pixels mostly.
 /// The Different Tetris Blocks like Square-Shape, L-Shape...
 /// But also fragments of those (in the sticky blob of left over pixels at the bottom)
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Shape {
     /// Pixels that are "filled out"
     pixels: HashSet<XY>,

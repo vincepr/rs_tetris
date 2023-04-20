@@ -1,6 +1,7 @@
 pub mod shapes;
 pub mod buf;
 use self::shapes::{Shape, XY};
+use self::buf::RingBuffer;
 
 /*
     Implements the Game logic.
@@ -18,7 +19,7 @@ pub struct Tetris {
     height:         i32,
     /// Player controlled shape and the next shape
     current_shape:  Shape,
-    next_shape:     Shape,
+    next_shape:     RingBuffer<Shape>,
     /// Pixels that build up on the bottom of the game:
     sticky_bottom_shapes: Vec<Shape>,
 }

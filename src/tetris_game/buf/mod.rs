@@ -9,10 +9,11 @@ pub enum RingBufferError{
 /// - pop() from front, 
 /// - push() to end, 
 /// - of static length
+/// Used to 
 #[derive(Debug, PartialEq)]
 pub struct RingBuffer<T>{
     all:    Vec<T>,
-    first:   usize,
+    first:  usize,
     size:   usize,
 }
 impl <T: Clone> RingBuffer <T>{
@@ -44,9 +45,13 @@ impl <T: Clone> RingBuffer <T>{
         if self.size >= self.all.len(){
             return Err(RingBufferError::AlreadyFull);
         }
-        self.size -= 1;
-        let new_last_idx = self.add_one(self.first+self.size);
-        self.size += 2;
+        let mut size = self.size as i32 - 1;
+        if self.size as i32 - 1 < 0 {
+            // wrap to the last element of the vec:
+            size += self.all.len() as i32;
+        }
+        let new_last_idx = self.add_one(self.first+size as usize);
+        self.size += 1;
         self.all[new_last_idx] = val;
         dbg!(new_last_idx);
         Ok(())
@@ -68,19 +73,8 @@ mod tests {
     use super::*;
     use RingBufferError::{AlreadyEmpty, AlreadyFull};
 
-    // #[test]
-    // fn test(){
-    //     let mut ring = RingBuffer::new(vec![1,2,3]);
-    //     dbg!(&ring);
-    //     ring.pop_and_push(99);
-    //     dbg!(&ring);
-    //     ring.pop_and_push(88);
-    //     dbg!(&ring);
-
-    // }
-
     #[test]
-    fn pop_to_much(){
+    fn cant_pop_to_much(){
         // trying to pop while its empty must fail. (for every possible first element) for size 4
         let mut ring = RingBuffer::new(vec!(0,1,2,3));
         ring.pop().unwrap();
@@ -106,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    fn push_to_much(){
+    fn cant_push_to_much(){
         // pushing into already full must fail. Testing for every possible "first-pointer" for size 3
         let mut ring = RingBuffer::new(vec!(0,1,2));
         assert_eq!(ring.push(9).unwrap_err(),AlreadyFull);
@@ -155,9 +149,10 @@ mod tests {
 
     #[test]
     fn push_into_pop_out(){
+        // adding and removing with push and pop
         let mut ring1 = RingBuffer::new(vec![0,1,2]);
 
-        // first pop push
+        // first pop n push
         let out = ring1.pop().unwrap();
         assert_eq!(out, 0);
         let ring2 = RingBuffer{all: vec![0,1,2],first: 1,size: 2,};
@@ -167,7 +162,7 @@ mod tests {
         let ring2 = RingBuffer{all: vec![99,1,2],first: 1,size: 3,};
         assert_eq!(ring1, ring2);
 
-        // second pop push
+        // second pop n push
         let out = ring1.pop().unwrap();
         assert_eq!(out, 1);
         let ring2 = RingBuffer{all: vec![99,1,2],first: 2,size: 2,};
@@ -177,8 +172,24 @@ mod tests {
         let ring2 = RingBuffer{all: vec![99,88,2],first: 2,size: 3,};
         assert_eq!(ring1, ring2);
         
+        // 3rd pop n push
+        let out = ring1.pop().unwrap();
+        assert_eq!(out, 2);
+        let ring2 = RingBuffer{all: vec![99,88,2],first: 0,size: 2,};
 
+        assert_eq!(ring1, ring2);
+        ring1.push(77).unwrap();
+        let ring2 = RingBuffer{all: vec![99,88,77],first: 0,size: 3,};
+        assert_eq!(ring1, ring2);
 
+        // 4th pop n push
+        let out = ring1.pop().unwrap();
+        assert_eq!(out, 99);
+        let ring2 = RingBuffer{all: vec![99,88,77],first: 1,size: 2,};
 
+        assert_eq!(ring1, ring2);
+        ring1.push(66).unwrap();
+        let ring2 = RingBuffer{all: vec![66,88,77],first: 1,size: 3,};
+        assert_eq!(ring1, ring2);
     }
 }
