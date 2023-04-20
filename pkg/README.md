@@ -24,7 +24,7 @@ web-sys = {version="0.3.61", features = ["Window"]}
 
 ## Testing locally
 - generate the WASM and JS bindings from the Rust sourcecode:`wasm-pack build --out-dir ./build/pkg --target web` 
-- 
+- then host the build folder in FiveServer or nginx
 
 ## Notes on CI with github Actions
 - as of this moment wasm-pack build generates a .gitignore for the folder (and no flag to turn that optional)
