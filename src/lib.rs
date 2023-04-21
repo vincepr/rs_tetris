@@ -12,7 +12,9 @@ use web_sys::{window, Element, HtmlElement, KeyboardEvent};
 pub mod tetris_game;
 
 /*
-*   UI (react with a rust wasm bindings)
+*   Frontend for the teris game.
+*   Uses react-library for rust to generate some javascript that runs react
+*   and hits the wasm generated instance of the teris game with user input or timer-ticks...
 */
 
 pub struct App {
@@ -58,6 +60,7 @@ impl Component for App {
         );
 
         // the timer the game loop runs on:
+        //  - for each tick the game moves down once.
         use_effect(
             {
                 let tetris = tetris.clone();
@@ -89,6 +92,9 @@ impl Component for App {
         );
 
         // event handler for user input:
+        // - up :rotate
+        // - left/right -press :try to move left and right
+        // - down -press :move down once
         let handle_key_down = use_callback(
             {
                 let mut tetris = tetris.clone();
@@ -126,6 +132,8 @@ impl Component for App {
             Deps::none(),
         );
 
+        // event handler for user input:
+        // - down -keepholding :speeds up the tick-rate while button is pressed
         let handle_key_up = use_callback(
             {
                 let mut speed = speed.clone();
@@ -139,7 +147,7 @@ impl Component for App {
             Deps::none(),
         );
 
-        // the div that make up the game-canvas-pixels:
+        // the div that draws the game-canvas-pixels:
         h!(div)
             .ref_container(&container)
             .tabindex(0)

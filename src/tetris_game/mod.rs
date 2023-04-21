@@ -147,10 +147,7 @@ impl Tetris {
         let random_shape = &Shape::new() + XY(self.width / 2, 0);
         let next_shape = self.next_shapes.pop_and_push(random_shape);
 
-        let new_sticky = std::mem::replace(
-            &mut self.current_shape,
-            next_shape,
-        );
+        let new_sticky = std::mem::replace(&mut self.current_shape, next_shape);
         self.sticky_bottom_shapes.push(new_sticky);
     }
 
