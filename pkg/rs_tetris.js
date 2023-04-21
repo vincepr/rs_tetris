@@ -94,22 +94,22 @@ function makeMutClosure(arg0, arg1, dtor, f) {
 
     return real;
 }
-function __wbg_adapter_26(arg0, arg1, arg2) {
-    const ret = wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h92af507ec56f87cb(arg0, arg1, addHeapObject(arg2));
-    return __WasmReact_RefContainerValue.__wrap(ret);
-}
-
-function __wbg_adapter_29(arg0, arg1) {
-    const ret = wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hc61f21d4de7ea0f9(arg0, arg1);
+function __wbg_adapter_26(arg0, arg1) {
+    const ret = wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h87081e4eed7ec4d8(arg0, arg1);
     return takeObject(ret);
 }
 
+function __wbg_adapter_29(arg0, arg1, arg2) {
+    const ret = wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h16f857a97d2b0ea8(arg0, arg1, addHeapObject(arg2));
+    return __WasmReact_RefContainerValue.__wrap(ret);
+}
+
 function __wbg_adapter_32(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h621f7d3592361caf(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hb096dec335c80b05(arg0, arg1);
 }
 
 function __wbg_adapter_35(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h25bc7c0bfa90811b(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h058c66971e307dc7(arg0, arg1, addHeapObject(arg2));
 }
 
 /**
@@ -156,7 +156,7 @@ function _assertClass(instance, klass) {
 }
 function __wbg_adapter_61(arg0, arg1, arg2) {
     _assertClass(arg2, __WasmReact_RefContainerValue);
-    wasm.wasm_bindgen__convert__closures__invoke1_mut_ref__h1092d9b3ff71e400(arg0, arg1, arg2.ptr);
+    wasm.wasm_bindgen__convert__closures__invoke1_mut_ref__h5845b3431d4ab0de(arg0, arg1, arg2.ptr);
 }
 
 let WASM_VECTOR_LEN = 0;
