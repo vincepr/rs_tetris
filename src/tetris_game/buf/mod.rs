@@ -31,6 +31,12 @@ impl<T: Clone> RingBuffer<T> {
         self.push(t).unwrap();
         out
     }
+
+    // returns reference to next in queue
+    pub fn peek(&self) -> &T{
+        &self.all[self.first]
+    }
+    
     fn pop(&mut self) -> Result<T, RingBufferError> {
         if self.size == 0 {
             return Err(RingBufferError::AlreadyEmpty);

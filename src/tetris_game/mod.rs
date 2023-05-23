@@ -14,7 +14,10 @@ use self::shapes::{Shape, XY};
 /// The Game(State) itself
 #[derive(Debug)]
 pub struct Tetris {
+    // game state
+    score: i32,
     game_over: bool,
+    // size of the playing field
     width: i32,
     height: i32,
     /// Player controlled shape and the next shape
@@ -39,6 +42,7 @@ impl Tetris {
             &Shape::new() + XY((width as i32) / 2, 0),
         ];
         Self {
+            score: 0 as i32,
             game_over: false,
             width: width as i32,
             height: height as i32,
@@ -55,6 +59,24 @@ impl Tetris {
         let height = self.height;
         let width = self.width;
         (0..height).flat_map(move |y| (0..width).map(move |x| XY(x, y)))
+    }
+
+    // gets the next shape to draw the preview
+    pub fn get_4x4pixels(&self) -> impl Iterator<Item=XY> {
+        let xoff = self.width / 2 - 1;
+        (-1..3).flat_map(move |y| (xoff..xoff+4).map(move |x| XY(x,y)))
+    }
+    // return picels of said 4 by 4 pixels
+    pub fn get_4x4type(&self, xy: XY) -> Option<&'static str> {
+        if self.next_shapes.peek().has_xy(xy){
+            Some(self.next_shapes.peek().get_typ())
+        } else {
+            None
+        }
+    }
+
+    pub fn get_score(&self) -> String {
+        format!("score: {}", self.score)
     }
 
     /// get type of the shape on point xy
@@ -107,12 +129,21 @@ impl Tetris {
         }
     }
 
+    // Points per line cleared: 1line:40     2lines:100      3liens:300  4lines:1200
     fn remove_full_lines(&mut self) {
-        // TODO: add highscore here
+        let mut lines_cleared = 0;
         for y in 0..self.height {
             if self.is_line_full(y) {
-                self.remove_line(y)
+                self.remove_line(y);
+                lines_cleared +=1;
             }
+        }
+        match lines_cleared{
+            4 => self.score += 1200,
+            3 => self.score += 300,
+            2 => self.score += 100,
+            1 => self.score += 40,
+            _ => {}
         }
     }
 

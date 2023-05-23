@@ -42,7 +42,8 @@ impl Component for App {
         let tetris = use_state(|| Tetris::new(self.width, self.height));
         let speed = use_state(|| 500);
 
-        // autofocus the div once mounted:
+        
+        // autofocus the div handling key_down events once mounted:
         let container = use_js_ref::<Element>(None);
         use_effect(
             {
@@ -147,7 +148,7 @@ impl Component for App {
             Deps::none(),
         );
 
-        // the div that draws the game-canvas-pixels:
+        // div for the 'whole page' to just listen for on_keydown everywhere, gets autofocus with use_effect
         h!(div)
             .ref_container(&container)
             .tabindex(0)
@@ -155,21 +156,65 @@ impl Component for App {
             .on_keyup(&handle_key_up)
             .style(
                 &Style::new()
-                    .display("inline-grid")
-                    .grid_template(format!(
-                        "repeat({}, 1em) / repeat({}, 1em)",
-                        self.height, self.width
-                    ))
+                    .width("100%")
+                    .height("100%")
                     .outline("none")
-                    .border("1px solid grey"),
             )
-            .build(c![..tetris.value().get_pixels().map(|xy| {
-                let typ = tetris.value().get_typ(xy);
+            .build(c![
 
+                
+
+                // the div that holds the game-canvas-pixels:
                 h!(div)
-                    .style(&Style::new().text_indent("-.2em").margin_top("-.2em"))
-                    .build(c![typ.unwrap_or_default()])
-            })])
+                    .style(
+                        &Style::new()
+                            .display("inline-grid")
+                            .grid_template(format!(
+                                "repeat({}, 1em) / repeat({}, 1em)",
+                                self.height, self.width
+                            ))
+                            .outline("none")
+                            .border("3px solid grey")
+                            .margin_top("2rem")
+                            .margin_left("2rem")
+                    )
+                    // divs making up the canvas-pixels:
+                    .build(c![..tetris.value().get_pixels().map(|xy| {
+                        let typ = tetris.value().get_typ(xy);
+
+                        h!(div)
+                            .style(&Style::new().text_indent("-.1em").margin_top("-.1em"))
+                            .build(c![typ.unwrap_or_default()])
+                    })])
+                ,
+                
+                // the preview-block for upcoming block:
+                h!(div)
+                    .style(
+                        &Style::new()
+                            .display("inline-grid")
+                            .grid_template(format!(
+                                "repeat({}, 1em) / repeat({}, 1em)",
+                                4, 4
+                            ))
+                            .outline("none")
+                            .border("3px solid grey")
+                            .margin_left("0.5rem")
+                    )
+                    .build(c![..tetris.value().get_4x4pixels().map(|xy| {
+                        let typ = tetris.value().get_4x4type(xy);
+
+                        h!(div)
+                            .style(&Style::new().text_indent("-.1em").margin_top("-.1em"))
+                            .build(c![typ.unwrap_or_default()])
+                    })])
+                ,
+
+                // score:
+                h!(div)
+                    .style(&Style::new().margin_left("2.1rem").color("lightcyan"))
+                    .build(c![tetris.value().get_score()]),
+            ])
     }
 }
 
