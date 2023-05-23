@@ -6,15 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust Tetris</title>
     <style>
-        html{
-            font-size: larger;
+        html, body {
+            font-size: xx-large;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        #root {
+            height:100%;
         }
     </style>
 </head>
 <body>
-    <h2>Tetris in Rust and WebAssembly</h2>
     <div id="root"></div>
-
     <script type="module">
         import "https://unpkg.com/react@18/umd/react.development.js";
         import "https://unpkg.com/react-dom@18/umd/react-dom.development.js";
