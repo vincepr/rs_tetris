@@ -203,11 +203,39 @@ impl Tetris {
         if self.game_over {
             return;
         }
-        let new_shape = self.current_shape.rotated_shape();
-        // check if new position is not an illegal move:
-        if !(self.is_out_of_bounds(&new_shape) || self.is_colliding(&new_shape)) {
-            self.current_shape = new_shape;
+        // first we check if the rotated Position is a legal move:
+        let mut new_shape = self.current_shape.rotated_shape();
+        if self.do_if_is_legal_move(new_shape) {
+            return
         }
+        // If Basic Rotation fails, 'Wall Kicks' are attempted to push the shape 'away from the sides etc.'
+        // https://tetris.wiki/Super_Rotation_System
+        // Since this version only implements one rotation anyways we just simply try to push the shape left and right by an offset and call it a day
+        new_shape = &self.current_shape.rotated_shape() +  XY(1, 0);
+        if self.do_if_is_legal_move(new_shape){
+           return
+        }
+        new_shape = &self.current_shape.rotated_shape() +  XY(2, 0);
+        if self.do_if_is_legal_move(new_shape){
+           return
+        }
+        new_shape = &self.current_shape.rotated_shape() +  XY(-1, 0);
+        if self.do_if_is_legal_move(new_shape){
+           return
+        }
+        new_shape = &self.current_shape.rotated_shape() +  XY(-2, 0);
+        if self.do_if_is_legal_move(new_shape){
+           return
+        }
+    }
+
+    // check if new position is not an illegal move (collision with existing shapes or out of bounds)
+    fn do_if_is_legal_move(&mut self, new_shape: Shape) -> bool{
+        if self.is_out_of_bounds(&new_shape) || self.is_colliding(&new_shape){
+            self.current_shape = new_shape;
+            return true
+        }
+        return false
     }
 }
 
