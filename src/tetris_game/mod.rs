@@ -231,7 +231,7 @@ impl Tetris {
 
     // check if new position is not an illegal move (collision with existing shapes or out of bounds)
     fn do_if_is_legal_move(&mut self, new_shape: Shape) -> bool{
-        if self.is_out_of_bounds(&new_shape) || self.is_colliding(&new_shape){
+        if !(self.is_out_of_bounds(&new_shape) || self.is_colliding(&new_shape)) {
             self.current_shape = new_shape;
             return true
         }
